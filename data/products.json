@@ -4,41 +4,41 @@
     "title": "Remera oversize algodón",
     "price": 12999,
     "category": "Ropa",
-    "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500"
+    "image": "https://http2.mlstatic.com/D_NQ_NP_955455-MLU81330356474_122024-O.webp"
   },
   {
     "id": 2,
-    "title": "Zapatillas urbanas",
+    "title": "Zapatillas",
     "price": 45999,
     "category": "Calzado",
-    "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500"
+    "image": "https://tse3.mm.bing.net/th/id/OIP.cOlkHiLcLp_ZqFYuB1-XPQHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
   },
   {
     "id": 3,
-    "title": "Mochila resistente al agua",
+    "title": "Mochila",
     "price": 28999,
     "category": "Accesorios",
-    "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500"
+    "image": "https://lojabagaggio.vteximg.com.br/arquivos/ids/2335526/0226708560001---MOCHILA-BG-GIRL-24J--ROSA-U00001.jpg?v=638350526251370000"
   },
   {
     "id": 4,
-    "title": "Campera de jean",
+    "title": "Campera",
     "price": 34999,
     "category": "Ropa",
-    "image": "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500"
+    "image": "https://media.karousell.com/media/photos/products/2023/12/12/beams_varsity_jacket_hoodie_1702386154_35a21c12_progressive.jpg"
   },
   {
     "id": 5,
-    "title": "Gorra bordada",
+    "title": "Gorra",
     "price": 8999,
     "category": "Accesorios",
-    "image": "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=500"
+    "image": "https://dpjye2wk9gi5z.cloudfront.net/wcsstore/ExtendedSitesCatalogAssetStore/images/catalog/zoom/4015006-0801V1.jpg"
   },
   {
     "id": 6,
     "title": "Buzo canguro básico",
     "price": 19999,
     "category": "Ropa",
-    "image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500"
+    "image": "https://f.fcdn.app/imgs/8f1288/elreydelentretenimiento.com/erdeuy/a746/original/catalogo/175995926_amarillo_2/1500-1500/buzo-canguro-n-north-sails-algodon-para-hombre-amarillo.jpg"
   }
 ]

@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.hero}>
-        <Text style={styles.heroTitle}>Bienvenida ✨</Text>
+        <Text style={styles.heroTitle}>Bienvenido</Text>
         <Text style={styles.heroSubtitle}>
           Descubrí lo nuevo de la temporada
         </Text>
