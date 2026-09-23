@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "title": "Remera oversize algodón",
+    "price": 12999,
+    "category": "Ropa",
+    "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500"
+  },
+  {
+    "id": 2,
+    "title": "Zapatillas urbanas",
+    "price": 45999,
+    "category": "Calzado",
+    "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500"
+  },
+  {
+    "id": 3,
+    "title": "Mochila resistente al agua",
+    "price": 28999,
+    "category": "Accesorios",
+    "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500"
+  },
+  {
+    "id": 4,
+    "title": "Campera de jean",
+    "price": 34999,
+    "category": "Ropa",
+    "image": "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500"
+  },
+  {
+    "id": 5,
+    "title": "Gorra bordada",
+    "price": 8999,
+    "category": "Accesorios",
+    "image": "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=500"
+  },
+  {
+    "id": 6,
+    "title": "Buzo canguro básico",
+    "price": 19999,
+    "category": "Ropa",
+    "image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500"
+  }
+]
