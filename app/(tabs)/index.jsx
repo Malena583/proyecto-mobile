@@ -1,11 +1,13 @@
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import products from '../../data/products.json';
+import { useFetch } from '../../hooks/useFetch';
+import { API_URL } from '../../constants/api';
 import { colors, typography, radius, spacing } from '../../theme';
 
 export default function Home() {
   const router = useRouter();
-  const destacados = products.slice(0, 3);
+  const { data, loading, error } = useFetch(`${API_URL}?limit=3`);
+  const destacados = data ?? [];
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -21,13 +23,16 @@ export default function Home() {
 
       <Text style={styles.sectionTitle}>Destacados</Text>
 
+      {loading && !data && <ActivityIndicator color={colors.secondary} />}
+      {error && !data && <Text style={styles.errorText}>No pudimos cargar los destacados.</Text>}
+
       {destacados.map((product) => (
         <Pressable
           key={product.id}
           style={styles.card}
           onPress={() => router.push(`/producto/${product.id}`)}
         >
-          <Image source={{ uri: product.image }} style={styles.image} />
+          <Image source={{ uri: product.image }} style={styles.image} resizeMode="contain" />
           <View style={styles.info}>
             <Text style={styles.category}>{product.category}</Text>
             <Text style={styles.title} numberOfLines={1}>{product.title}</Text>
@@ -58,6 +63,7 @@ const styles = StyleSheet.create({
   },
   ctaText: { color: colors.white, ...typography.button },
   sectionTitle: { ...typography.h3, color: colors.textPrimary, marginBottom: spacing.sm },
+  errorText: { color: colors.textSecondary },
   card: {
     flexDirection: 'row',
     backgroundColor: colors.surface,
@@ -70,7 +76,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 1 },
   },
-  image: { width: 80, height: 80 },
+  image: { width: 80, height: 80, backgroundColor: colors.white },
   info: { flex: 1, padding: spacing.sm, justifyContent: 'center' },
   category: { color: colors.textSecondary, fontSize: 12 },
   title: { fontSize: 14, fontWeight: '600', color: colors.textPrimary, marginVertical: 2 },

@@ -4,12 +4,12 @@ import {
   ScrollView, StyleSheet, Text, TextInput, View,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { CartContext } from '../contexts/CartContext';
+import { UserContext } from '../contexts/UserContext';
 import { colors, typography, radius, spacing } from '../theme';
 
 export default function Registro() {
   const router = useRouter();
-  const { registrarUsuario } = useContext(CartContext);
+  const { registrarUsuario } = useContext(UserContext);
 
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');

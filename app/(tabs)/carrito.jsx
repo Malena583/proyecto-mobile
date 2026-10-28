@@ -1,10 +1,10 @@
 import { useContext } from 'react';
-import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { CartContext } from '../../contexts/CartContext';
 import { colors, typography, radius, spacing } from '../../theme';
 
 export default function Carrito() {
-  const { carrito, cambiarCantidad, eliminarProducto, vaciarCarrito, total } = useContext(CartContext);
+  const { carrito, cambiarCantidad, eliminarProducto, vaciarCarrito, comprar, total } = useContext(CartContext);
 
   if (carrito.length === 0) {
     return (
@@ -13,6 +13,11 @@ export default function Carrito() {
       </View>
     );
   }
+
+  const handleComprar = () => {
+    const resultado = comprar();
+    Alert.alert(resultado.success ? '¡Compra exitosa!' : 'Atención', resultado.message);
+  };
 
   return (
     <View style={styles.container}>
@@ -45,6 +50,9 @@ export default function Carrito() {
 
       <View style={styles.footer}>
         <Text style={styles.total}>Total: ${total.toFixed(2)}</Text>
+        <Pressable style={styles.comprarButton} onPress={handleComprar} disabled={carrito.length === 0}>
+          <Text style={styles.comprarText}>Comprar</Text>
+        </Pressable>
         <Pressable style={styles.vaciarButton} onPress={vaciarCarrito}>
           <Text style={styles.vaciarText}>Vaciar carrito</Text>
         </Pressable>
@@ -85,6 +93,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   total: { ...typography.h4, marginBottom: spacing.sm },
+  comprarButton: {
+    backgroundColor: colors.secondary,
+    paddingVertical: 14,
+    borderRadius: radius.md,
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+  },
+  comprarText: { color: colors.white, fontWeight: '700', fontSize: 16 },
   vaciarButton: { alignItems: 'center', paddingVertical: 10 },
   vaciarText: { color: colors.textSecondary },
 });

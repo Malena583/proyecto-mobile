@@ -4,16 +4,15 @@ import {
   ScrollView, StyleSheet, Text, TextInput, View,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { CartContext } from '../contexts/CartContext';
+import { UserContext } from '../contexts/UserContext';
 import { colors, typography, radius, spacing } from '../theme';
 
 export default function Login() {
   const router = useRouter();
-  const { loginUsuario } = useContext(CartContext);
+  const { loginUsuario } = useContext(UserContext);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Faltan datos', 'Completá correo y contraseña.');

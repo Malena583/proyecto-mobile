@@ -1,135 +1,82 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserContext } from './UserContext';
 
-export const CartContext = createContext();
+export const CartContext = createContext(null);
 
-export const CartProvider = ({ children }) => {
-  const [usuario, setUsuario] = useState(null);
+export function CartProvider({ children }) {
+  const { usuario } = useContext(UserContext);
+  const email = usuario?.email;
+
   const [carrito, setCarrito] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [cargadoPara, setCargadoPara] = useState(null);
 
-  // Cargar sesión activa al iniciar la app
+  // Cargar el carrito del usuario activo
   useEffect(() => {
-    const cargarSesion = async () => {
-      const activo = await AsyncStorage.getItem('usuario_activo');
-      if (activo) {
-        const usuarioSesion = JSON.parse(activo);
-        setUsuario(usuarioSesion);
-        const carritoGuardado = await AsyncStorage.getItem(`carrito_${usuarioSesion.email}`);
-        setCarrito(carritoGuardado ? JSON.parse(carritoGuardado) : []);
-      }
-      setLoading(false);
+    if (!email) {
+      setCarrito([]);
+      setCargadoPara(null);
+      return;
+    }
+    let cancelado = false;
+    AsyncStorage.getItem(`carrito_${email}`).then((raw) => {
+      if (cancelado) return;
+      setCarrito(raw ? JSON.parse(raw) : []);
+      setCargadoPara(email);
+    });
+    return () => {
+      cancelado = true;
     };
-    cargarSesion();
-  }, []);
+  }, [email]);
 
-  // Guardar carrito cada vez que cambia
+  // Guardar solo cuando ya se cargó el carrito de ese usuario
   useEffect(() => {
-    if (usuario) {
-      AsyncStorage.setItem(`carrito_${usuario.email}`, JSON.stringify(carrito));
+    if (email && cargadoPara === email) {
+      AsyncStorage.setItem(`carrito_${email}`, JSON.stringify(carrito)).catch(console.error);
     }
-  }, [carrito, usuario]);
-
-  const registrarUsuario = async (nuevoUsuario) => {
-    const usuariosGuardados = JSON.parse(await AsyncStorage.getItem('usuarios')) || [];
-
-    const existe = usuariosGuardados.some(
-      (u) => u.email.toLowerCase() === nuevoUsuario.email.toLowerCase()
-    );
-    if (existe) {
-      return { success: false, message: 'El correo electrónico ya se encuentra registrado.' };
-    }
-
-    const listaActualizada = [...usuariosGuardados, nuevoUsuario];
-    await AsyncStorage.setItem('usuarios', JSON.stringify(listaActualizada));
-
-    await loginAuto(nuevoUsuario);
-    return { success: true, message: `¡Bienvenido/a, ${nuevoUsuario.nombre}! Tu cuenta fue creada con éxito.` };
-  };
-
-  const loginUsuario = async (email, password) => {
-    const usuariosGuardados = JSON.parse(await AsyncStorage.getItem('usuarios')) || [];
-    const usuarioEncontrado = usuariosGuardados.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
-    );
-
-    if (!usuarioEncontrado) {
-      return { success: false, message: 'Correo o contraseña incorrectos.' };
-    }
-
-    await loginAuto(usuarioEncontrado);
-    return { success: true };
-  };
-
-  const loginAuto = async (userObj) => {
-    const usuarioSesion = { nombre: userObj.nombre, email: userObj.email };
-    await AsyncStorage.setItem('usuario_activo', JSON.stringify(usuarioSesion));
-
-    const carritoGuardado = await AsyncStorage.getItem(`carrito_${usuarioSesion.email}`);
-    setCarrito(carritoGuardado ? JSON.parse(carritoGuardado) : []);
-
-    setUsuario(usuarioSesion);
-  };
-
-  const logout = async () => {
-    await AsyncStorage.removeItem('usuario_activo');
-    setUsuario(null);
-    setCarrito([]);
-  };
+  }, [carrito, cargadoPara, email]);
 
   const agregarProducto = (producto) => {
     if (!usuario) {
       return { success: false, message: 'Debes iniciar sesión o registrarte para agregar productos.' };
     }
     setCarrito((prev) => {
-      const existe = prev.find((item) => item.id === producto.id);
+      const existe = prev.find((i) => i.id === producto.id);
       if (existe) {
-        return prev.map((item) =>
-          item.id === producto.id ? { ...item, cantidad: item.cantidad + 1 } : item
-        );
+        return prev.map((i) => (i.id === producto.id ? { ...i, cantidad: i.cantidad + 1 } : i));
       }
       return [...prev, { ...producto, cantidad: 1 }];
     });
     return { success: true, message: 'Producto agregado al carrito con éxito.' };
   };
 
-  const cambiarCantidad = (id, cambio) => {
+  const cambiarCantidad = (id, cambio) =>
     setCarrito((prev) =>
-      prev.map((item) => {
-        if (item.id === id) {
-          const nueva = item.cantidad + cambio;
-          return { ...item, cantidad: Math.max(1, nueva) };
-        }
-        return item;
-      })
+      prev.map((i) => (i.id === id ? { ...i, cantidad: Math.max(1, i.cantidad + cambio) } : i))
     );
-  };
 
-  const eliminarProducto = (id) => {
-    setCarrito((prev) => prev.filter((item) => item.id !== id));
-  };
-
+  const eliminarProducto = (id) => setCarrito((prev) => prev.filter((i) => i.id !== id));
   const vaciarCarrito = () => setCarrito([]);
 
-  const total = carrito.reduce((acc, item) => acc + item.price * item.cantidad, 0);
+  const comprar = () => {
+    if (carrito.length === 0) {
+      return { success: false, message: 'El carrito está vacío.' };
+    }
+    if (!usuario) {
+      return { success: false, message: 'Debes iniciar sesión para comprar.' };
+    }
+    const totalCompra = carrito.reduce((acc, i) => acc + i.price * i.cantidad, 0);
+    setCarrito([]);
+    return { success: true, message: `¡Compra realizada con éxito! Total: $${totalCompra.toFixed(2)}` };
+  };
+
+  const total = carrito.reduce((acc, i) => acc + i.price * i.cantidad, 0);
 
   return (
     <CartContext.Provider
-      value={{
-        usuario,
-        carrito,
-        loading,
-        registrarUsuario,
-        loginUsuario,
-        logout,
-        agregarProducto,
-        cambiarCantidad,
-        eliminarProducto,
-        vaciarCarrito,
-        total,
-      }}
+      value={{ carrito, agregarProducto, cambiarCantidad, eliminarProducto, vaciarCarrito, comprar, total }}
     >
       {children}
     </CartContext.Provider>
   );
-};
+}
